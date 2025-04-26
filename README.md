@@ -23,4 +23,4 @@ Clean Architecture prensipleriyle katmanlara ayrılmış, Entity Framework Core 
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download)  
 - [PostgreSQL 15+](https://www.postgresql.org/download/) veya Docker  
-- [Redis](https://redis.io/)
+- [Redis](https://redis.io/) veya Docker
