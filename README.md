@@ -1,7 +1,7 @@
 ## 📖 Proje Hakkında
 
 Basit bir kuaför randevu yönetimi API’si.  
-Clean Architecture prensipleriyle katmanlara ayrılmış, Entity Framework Core + PostgreSQL veritabanı, Redis cache ve Docker desteği içerir.
+Clean Architecture prensipleriyle katmanlara ayrılmış, Entity Framework Core + PostgreSQL veritabanı, Redis cache, Sayfalama ve Docker desteği içerir.
 
 - **API**: ASP.NET Core Web API  
 - **Application**: Use-case (iş kuralları) katmanı  
