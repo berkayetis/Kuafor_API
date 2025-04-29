@@ -10,6 +10,7 @@ namespace KuaforRandevu.Application.Mapping
         {
             //appointment
             CreateMap<CreateAppointmentDto, Appointment>();
+            CreateMap<Appointment, AppointmentDto>();
 
             //stylist
             CreateMap<Stylist, StylistDto>();

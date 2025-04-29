@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KuaforRandevu.Core.Parameters;
+using KuaforRandevu.Infrastructure.Implementations;
 
 namespace Infrastructure.Implementations
 {
@@ -47,6 +49,15 @@ namespace Infrastructure.Implementations
         public Task<Appointment?> GetByIdAsync(Guid id)
         {
             return _repositoryManager.AppointmentRepo.GetAppointmentByIdAsync(id);
+        }
+
+        public async Task<(IEnumerable<AppointmentDto> Appointments, int TotalCount)> GetPagedAppointmentsAsync(PaginationParams paginationParams)
+        {
+            //todo: redis cache system
+
+            var received = await _repositoryManager.AppointmentRepo.GetPagedAsync(paginationParams);
+            var appointmentDto = _mapper.Map<IEnumerable<AppointmentDto>>(received.Appointments);          
+            return (appointmentDto, received.TotalCount);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Core.Interfaces
         Task CreateCustomerAsync(Customer customer);
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
         Task<Customer?> GetCustomerByIdAsync(Guid id);
+        Task<(IEnumerable<Customer> Items, int TotalCount)> GetAllPagedCustomersAsync(PaginationParams paginationParams);
+
     }
 }

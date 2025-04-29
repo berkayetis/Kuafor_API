@@ -3,6 +3,7 @@ using AutoMapper;
 using Core.Interfaces;
 using KuaforRandevu.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using KuaforRandevu.Core.Parameters;
 
 namespace KuaforRandevu.Application.Controllers
 {
@@ -22,6 +23,14 @@ namespace KuaforRandevu.Application.Controllers
         {
             await _service.CreateAsync(createAppointmentDto);
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedAppointments([FromQuery] PaginationParams paginationParams)
+        {
+            var result = await _service.GetPagedAppointmentsAsync(paginationParams);
+            Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+            return Ok(result.Appointments);
         }
 
         [HttpGet("{id}")]

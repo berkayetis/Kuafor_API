@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using KuaforRandevu.Core.Interfaces;
+using KuaforRandevu.Core.Parameters;
 
 namespace Infrastructure.Implementations
 {
@@ -70,7 +71,7 @@ namespace Infrastructure.Implementations
             }
 
             // get all from database
-            var stylistList = await _repositoryManager.StylistRepo.GetAllStylistAsync();
+            var stylistList = await _repositoryManager.StylistRepo.GetAllStylistsAsync();
 
             // set cache
             await _cache.SetAsync(AllKey, stylistList, TimeSpan.FromMinutes(5));
@@ -87,6 +88,28 @@ namespace Infrastructure.Implementations
 
             var stylistDto = _mapper.Map<StylistDto>(stylist);
             return stylistDto;
+        }
+
+        public async Task<(IEnumerable<Stylist> Stylists, int TotalCount)> GetAllPagedAsync(PaginationParams paginationParams)
+        {
+            // Cache’den oku
+            try
+            {
+                var cached = await _cache.GetAsync<(IEnumerable<Stylist> Stylists, int TotalCount)>(AllKey);
+                if (cached.Stylists is not null)
+                {
+                    return cached;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Redis cache unavailable, falling back to DB");
+
+                throw new Exception(AllKey + " cache is not available", ex);
+            }
+
+            var result = await _repositoryManager.StylistRepo.GetAllPagedStylistsAsync(paginationParams);
+            return result;
         }
     }
 }

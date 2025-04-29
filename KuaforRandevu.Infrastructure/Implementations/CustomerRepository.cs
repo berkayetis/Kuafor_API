@@ -1,6 +1,7 @@
 ﻿using Core.Interfaces;
 using Infrastructure.Data;
 using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using KuaforRandevu.Infrastructure.Implementations;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,9 +26,16 @@ namespace Infrastructure.Implementations
         {
             return await GetAllAsync();
         }
+
+        public async Task<(IEnumerable<Customer> Items, int TotalCount)> GetAllPagedCustomersAsync(PaginationParams paginationParams)
+        {
+            var result = await GetPagedAsync(paginationParams);
+            return result;
+        }
+
         public async Task<Customer?> GetCustomerByIdAsync(Guid id)
         {
-            return await FindByConditionAsync(c => c.Id == id).FirstAsync();  
+            return await FindByCondition(c => c.Id == id).FirstAsync();  
         }
     }
 }

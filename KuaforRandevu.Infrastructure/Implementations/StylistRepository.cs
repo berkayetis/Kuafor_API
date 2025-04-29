@@ -2,6 +2,7 @@
 using Infrastructure.Data;
 using KuaforRandevu.Application.Exceptions;
 using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using KuaforRandevu.Infrastructure.Implementations;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,14 +24,19 @@ namespace Infrastructure.Implementations
             await CreateAsync(stylist);
         }
 
-        public async Task<IEnumerable<Stylist>> GetAllStylistAsync()
+        public async Task<(IEnumerable<Stylist> Items, int TotalCount)> GetAllPagedStylistsAsync(PaginationParams paginationParams)
+        {
+            return await GetPagedAsync(paginationParams);
+        }
+
+        public async Task<IEnumerable<Stylist>> GetAllStylistsAsync()
         {
             return await GetAllAsync();
         }
 
         public async Task<Stylist?> GetStylistByIdAsync(Guid id)
         {
-            var result =  await FindByConditionAsync((s) => s.Id.Equals(id)).FirstAsync();
+            var result =  await FindByCondition((s) => s.Id.Equals(id)).FirstAsync();
             if (result == null)
             {
                 throw new NotFoundException($"{id} stylist is not found");

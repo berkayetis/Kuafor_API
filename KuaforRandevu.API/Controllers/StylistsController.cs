@@ -3,6 +3,8 @@ using Core.Interfaces;
 using KuaforRandevu.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
+using KuaforRandevu.Core.Parameters;
 
 namespace KuaforRandevu.Application.Controllers
 {
@@ -18,10 +20,11 @@ namespace KuaforRandevu.Application.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllStylists()
+        public async Task<IActionResult> GetAllStylists([FromQuery] PaginationParams paginationParams)
         {
-            var stylists = await _stylistService.GetAllAsync();
-            return Ok(stylists);
+            var stylists = await _stylistService.GetAllPagedAsync(paginationParams);
+            Response.Headers.Add("X-Total-Count", stylists.TotalCount.ToString());
+            return Ok(stylists.Stylists);
         }
 
         [HttpGet("{id}")]

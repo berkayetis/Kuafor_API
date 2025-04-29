@@ -5,6 +5,7 @@ using KuaforRandevu.Application.Dtos;
 using KuaforRandevu.Application.Exceptions;
 using KuaforRandevu.Core.Interfaces;
 using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -90,6 +91,32 @@ namespace Infrastructure.Implementations
             await _cache.SetAsync(AllKey, customerList, TimeSpan.FromMinutes(5));
 
             return customerList;
+        }
+
+        public async Task<(IEnumerable<Customer> Customers, int TotalCount)> GetAllPagedCustomersAsync(PaginationParams paginationParams)
+        {
+            // Cache’den oku
+            try
+            {
+                var cached = await _cache.GetAsync<(IEnumerable<Customer> Items, int TotalCount)>(AllKey);
+                if (cached.Items is not null)
+                {
+                    return cached;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Redis cache unavailable, falling back to DB");
+                throw new Exception(AllKey + " cache is not available", ex);
+            }
+
+            // get all from database
+            var customerResult = await _repositoryManager.CustomerRepo.GetAllPagedCustomersAsync(paginationParams);
+
+            // set cache
+            await _cache.SetAsync(AllKey, customerResult, TimeSpan.FromMinutes(5));
+
+            return customerResult;
         }
     }
 }

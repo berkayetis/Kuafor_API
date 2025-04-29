@@ -2,6 +2,7 @@
 using Infrastructure.Data;
 using KuaforRandevu.Core.Interfaces;
 using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using KuaforRandevu.Infrastructure.Implementations;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -50,6 +51,12 @@ namespace Infrastructure.Implementations
                            .Include(a => a.Customer)
                            .Include(a => a.Stylist)
                            .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<(IEnumerable<Appointment> Appointments, int TotalCount)> GetPagedAsync(PaginationParams paginationParams)
+        {
+            var result = await GetPagedAsync(paginationParams, predicate: null, trackChanges: false);
+            return result;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace KuaforRandevu.Core.Interfaces
         /// Tüm randevuları liste olarak döner.
         /// </summary>
         Task<IEnumerable<Appointment>> GetAllAppointmentAsync();
+
+        Task<(IEnumerable<Appointment> Appointments, int TotalCount)> GetPagedAsync(PaginationParams paginationParams);
     }
 
 }

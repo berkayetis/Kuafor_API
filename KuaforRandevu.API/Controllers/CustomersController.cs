@@ -2,6 +2,7 @@
 using KuaforRandevu.Application.Dtos;
 using KuaforRandevu.Core.Interfaces;
 using KuaforRandevu.Core.Models;
+using KuaforRandevu.Core.Parameters;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,14 +18,22 @@ namespace KuaforRandevu.Application.Controllers
             _customerService = customerRepository;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllCustomers()
         {
             var customers = await _customerService.GetAllCustomersAsync();
             return Ok(customers);
         }
 
-        [HttpPost]
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedCustomers([FromQuery] PaginationParams paginationParams)
+        {
+            var customers = await _customerService.GetAllPagedCustomersAsync(paginationParams);
+            Response.Headers.Add("X-Total-Count", customers.TotalCount.ToString());
+            return Ok(customers.Customers);
+        }
+
+        [HttpPost("create")]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerDto createCustomerDto)
         {
             if (createCustomerDto == null)
